@@ -92,8 +92,34 @@ bool findWorkingSwap(int& r1, int& c1, int& r2, int& c2)
 bool loadLevel()
 {
     ifstream fin("level.txt");
+    if (!fin)               // file is missing or cannot be opened
+    {
+        return false;
+    }
 
-    return true;   // TODO (Saim) - finish reading the file
+    // Line 1: rows and cols. We read them only to move past them,
+    // the board size is fixed by ROWS and COLS
+    int rows, cols;
+    fin >> rows >> cols;
+
+    // Line 2: number of moves and the target score
+    fin >> movesLeft >> target;
+
+    // The rest: the 8 x 8 board, read row by row, left to right.
+    // >> skips spaces and newlines, so each read takes the next number
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            fin >> board[r][c];
+        }
+    }
+
+    if (!fin)               // file was incomplete or had a non-number in it
+    {
+        return false;
+    }
+    return true;
 }
 
 // Nested loops: dark square for each cell, coloured circle on top,
@@ -232,6 +258,8 @@ int main()
     srand(time(0));
     sf::RenderWindow window(sf::VideoMode({600, 680}), "Candy Crush");
     window.setFramerateLimit(60);
+    
+    
 
     while (window.isOpen())
     {
