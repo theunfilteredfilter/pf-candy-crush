@@ -45,9 +45,51 @@ sf::Font font;
 
 // Clears marked[][], checks every group of 3 in rows and columns,
 // marks them, and returns how many candies are marked
+void printMarked()
+{
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            cout<<marked[r][c]<<" ";
+        }
+        cout<<endl;
+    }
+}
 int findMatches()
 {
-    return 0;   // TODO (Ubaid)
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            marked[r][c]=false;
+        }
+    }
+    int count=0;
+
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c+2<COLS;c++)
+        {
+           if(board[r][c]!=0 && board[r][c]==board[r][c+1] && board[r][c]==board[r][c+2])
+           {
+            marked[r][c]=true;
+            marked[r][c+1]=true;
+            marked[r][c+2]=true;
+           }
+        }
+    }
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            if(marked[r][c])
+            {
+                count++;
+            }
+        }
+    }
+    return count;
 }
 
 // Sets every marked cell to 0 and adds POINTS_PER_CANDY for each one
@@ -302,7 +344,11 @@ int main()
     srand(time(0));
     sf::RenderWindow window(sf::VideoMode({600, 680}), "Candy Crush");
     window.setFramerateLimit(60);
-    
+
+
+   // loadLevel();     //test lines
+   // cout<<"Matches:"<<findMatches()<<endl;//test line
+    //printMarked();//test line
     
 
     while (window.isOpen())
