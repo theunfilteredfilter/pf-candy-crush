@@ -56,6 +56,17 @@ void printMarked()
         cout<<endl;
     }
 }
+void printBoard()
+{
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            cout<<board[r][c]<<" ";
+        }
+        cout<<endl;
+    }
+}
 int findMatches()
 {
     for(int r=0;r<ROWS;r++)
@@ -108,7 +119,21 @@ int findMatches()
 // Returns how many candies were removed
 int removeMatches()
 {
-    return 0;   // TODO (Ubaid)
+    int removed =0;
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            if(marked[r][c])
+            {
+                board[r][c]=0;
+                score+=POINTS_PER_CANDY;
+                removed++;
+            }
+
+        }
+    }
+    return removed;
 }
 
 // One column at a time, bottom-up, using writeRow, so candies fall into gaps
@@ -361,7 +386,9 @@ int main()
 //    loadLevel();     //test lines
 //     cout<<"Matches:"<<findMatches()<<endl;//test line
 //     printMarked();//test line
-    
+// cout << "Removed:" << removeMatches() << endl;//test lines
+// printBoard();//test line
+// cout << "Score:" << score << endl;// test line 
 
     while (window.isOpen())
     {
