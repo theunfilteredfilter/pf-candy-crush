@@ -79,6 +79,18 @@ int findMatches()
            }
         }
     }
+     for(int r=0;r+2<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+           if(board[r][c]!=0 && board[r][c]==board[r+1][c] && board[r+1][c]==board[r+2][c])
+           {
+            marked[r][c]=true;
+            marked[r+1][c]=true;
+            marked[r+2][c]=true;
+           }
+        }
+    }
     for(int r=0;r<ROWS;r++)
     {
         for(int c=0;c<COLS;c++)
@@ -346,9 +358,9 @@ int main()
     window.setFramerateLimit(60);
 
 
-   // loadLevel();     //test lines
-   // cout<<"Matches:"<<findMatches()<<endl;//test line
-    //printMarked();//test line
+//    loadLevel();     //test lines
+//     cout<<"Matches:"<<findMatches()<<endl;//test line
+//     printMarked();//test line
     
 
     while (window.isOpen())
