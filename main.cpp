@@ -126,7 +126,51 @@ bool loadLevel()
 // white ring on the selected candy
 void drawBoard(sf::RenderWindow& window)
 {
-    // TODO (Saim)
+    // colour for every candy number: colors[1] is candy 1, and so on
+    sf::Color colors[7] = { sf::Color(25, 25, 45),     // 0: empty
+                            sf::Color::Red,            // 1
+                            sf::Color(255, 150, 0),    // 2: orange
+                            sf::Color::Yellow,         // 3
+                            sf::Color::Green,          // 4
+                            sf::Color::Blue,           // 5
+                            sf::Color(170, 90, 255) }; // 6: purple
+
+    // one square and one circle, moved and reused for every cell
+    sf::RectangleShape cell({66.f, 66.f});      // 4 px smaller than CELL, so grid lines show
+    cell.setFillColor(sf::Color(25, 25, 45));
+    sf::CircleShape candy(28.f);                // 56 px wide, fits inside a 70 px cell
+
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            // top-left pixel of this cell: start of the board + c cells right, r cells down
+            float x = BOARD_X + c * CELL;
+            float y = BOARD_Y + r * CELL;
+
+            // dark square, 2 px in from each side: (70 - 66) / 2 = 2
+            cell.setPosition({x + 2, y + 2});
+            window.draw(cell);
+
+            // candy on top, centred: (70 - 56) / 2 = 7
+            // its colour comes from its number in the board
+            candy.setFillColor(colors[board[r][c]]);
+            candy.setPosition({x + 7, y + 7});
+
+            // white ring on the selected candy only; reset it for the others
+            // because the same circle is reused for every cell
+            if (r == selRow && c == selCol)
+            {
+                candy.setOutlineThickness(4.f);
+                candy.setOutlineColor(sf::Color::White);
+            }
+            else
+            {
+                candy.setOutlineThickness(0.f);
+            }
+            window.draw(candy);
+        }
+    }
 }
 
 // Turns a click in pixels into a row and column
