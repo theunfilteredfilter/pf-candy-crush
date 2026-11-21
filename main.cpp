@@ -271,7 +271,24 @@ void drawBoard(sf::RenderWindow& window)
 // Returns false if the click is outside the board
 bool cellFromClick(int x, int y, int& row, int& col)
 {
-    return false;   // TODO (Saim)
+    // the four edges of the board, in pixels
+    float leftEdge   = BOARD_X;
+    float topEdge    = BOARD_Y;
+    float rightEdge  = BOARD_X + COLS * CELL;   // 20 + 8 * 70 = 580
+    float bottomEdge = BOARD_Y + ROWS * CELL;   // 100 + 8 * 70 = 660
+
+    // clicks outside the board are ignored
+    // (>= because the right and bottom edge pixels are already off the board)
+    if (x < leftEdge || x >= rightEdge || y < topEdge || y >= bottomEdge)
+    {
+        return false;
+    }
+
+    // pixels into the board / cell size = cell number
+    // (int) cuts off the decimal, e.g. 145 / 70 = 2.07 -> column 2
+    col = (int)((x - leftEdge) / CELL);   // how many whole cells across
+    row = (int)((y - topEdge) / CELL);    // how many whole cells down
+    return true;
 }
 
 // Swaps two candies. If findMatches() is 0, swaps them back (no move used).
