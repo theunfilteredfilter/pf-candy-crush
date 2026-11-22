@@ -287,7 +287,38 @@ void trySwap(int r1, int c1, int r2, int c2)
 // second click anywhere else on the board selects the new candy
 void handleBoardClick()
 {
-    // TODO (Saim)
+    // 1. turn the click into a cell; ignore clicks off the board
+    //    (cellFromClick fills r and c through its & parameters)
+    int r, c;
+    if (!cellFromClick(clickX, clickY, r, c))
+    {
+        return;
+    }
+
+    // 2. nothing selected yet (-1) -> select this candy
+    if (selRow == -1 || selCol == -1)
+    {
+        selRow = r;
+        selCol = c;
+        return;
+    }
+
+    // 3. a candy is already selected -> is the clicked one a neighbour?
+    //    neighbours are 1 step up, down, left or right, so the two
+    //    distances add up to exactly 1 (diagonal = 2, same cell = 0)
+    int rowDiff = r - selRow;
+    int colDiff = c - selCol;
+    if (abs(rowDiff) + abs(colDiff) == 1)
+    {
+        // neighbour -> swap the selected candy with the clicked one
+        trySwap(selRow, selCol, r, c);
+    }
+    else
+    {
+        // not a neighbour -> select the clicked candy instead
+        selRow = r;
+        selCol = c;
+    }
 }
 
 // Writes score, movesLeft, target and the board to savegame.txt
