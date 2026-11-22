@@ -450,7 +450,15 @@ void drawHUD(sf::RenderWindow& window)
 // Sets gameState and playerWon, and calls clearSave()
 void checkGameEnd()
 {
-    // TODO (Rayan)
+    if(score>=target)
+    { 
+        gameState=GAME_OVER;
+        playerWon=true;
+    }
+    else if (movesLeft<=0)
+    { gameState=GAME_OVER;
+    playerWon=false;}
+    
 }
 
 // score = 0, nothing selected, calls loadLevel(), gameState = PLAYING
