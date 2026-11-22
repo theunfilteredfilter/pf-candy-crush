@@ -139,13 +139,37 @@ int removeMatches()
 // One column at a time, bottom-up, using writeRow, so candies fall into gaps
 void dropCandies()
 {
-    // TODO (Ubaid)
+   for(int c=0;c<COLS;c++)
+   {
+     int writeRow=ROWS-1;
+    for(int r=ROWS-1;r>=0;r--)
+    {
+       if(board[r][c]!=0)
+       {
+        board[writeRow][c]=board[r][c];
+        writeRow--;
+       }
+    }
+    for(int r=0;r<=writeRow;r++)
+    {
+        board[r][c]=0;
+    }
+   }
 }
 
 // Every cell that is still 0 gets rand() % 6 + 1
 void refill()
 {
-    // TODO (Ubaid)
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            if(board[r][c]==0)
+            {
+                board[r][c]=rand() % 6+1;
+            }
+        }
+    }
 }
 
 // Repeats remove, drop, refill while findMatches() > 0 (chains)
@@ -432,11 +456,20 @@ int main()
 
 
 //    loadLevel();     //test lines
+//    board[1][0] = 0;
+//    board[3][0] = 0;
+//    board[4][0] = 0;
 //     cout<<"Matches:"<<findMatches()<<endl;//test line
 //     printMarked();//test line
 // cout << "Removed:" << removeMatches() << endl;//test lines
+// printBoard();
+// cout<<"---"<<endl;
+// dropCandies();
 // printBoard();//test line
+// cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
+// refill();
+// printBoard();
 
     while (window.isOpen())
     {
