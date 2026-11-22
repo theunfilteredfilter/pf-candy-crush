@@ -187,7 +187,50 @@ void resolveMatches()
 // and puts the two cells in r1, c1, r2, c2
 bool findWorkingSwap(int& r1, int& c1, int& r2, int& c2)
 {
-    return false;   // TODO (Ubaid, bonus)
+
+    int temp, result;                  // declared ONCE here, so no more "redeclaration" error
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            if (c + 1 < COLS)          // right neighbour
+            {
+                 temp=board[r][c];
+                board[r][c]=board[r][c+1];
+                board[r][c+1]=temp;
+                result = findMatches();
+                temp=board[r][c];
+                board[r][c]=board[r][c+1];
+                board[r][c+1]=temp;
+                if (result > 0)
+                {
+                    r1 = r;  c1 = c;      // first cell
+                    r2 = r;  c2 = c+1;      // second cell (the right neighbour)
+                    return true;
+                }
+            }
+            if (r+1 < ROWS)            // down neighbour
+            {
+                // same steps, but swap board[r][c] with board[r+1][c]
+                 temp=board[r][c];
+                board[r][c]=board[r+1][c];
+                board[r+1][c]=temp;
+                result = findMatches();
+                temp=board[r][c];
+                board[r][c]=board[r+1][c];
+                board[r+1][c]=temp;
+                if (result > 0)
+                {
+                    r1 = r;  c1 = c;      // first cell
+                    r2 = r+1;  c2 = c;      // second cell (the right neighbour)
+                    return true;
+                }
+
+                // second cell is now r+1 and c
+            }
+        }
+    }
+    return false;   
 }
 
 
@@ -464,8 +507,8 @@ int main()
 //    board[1][0] = 0;
 //    board[3][0] = 0;
 //    board[4][0] = 0;
-  // cout<<"Matches:"<<findMatches()<<endl;//test line
- // resolveMatches();
+//   cout<<"Matches:"<<findMatches()<<endl;//test line
+//  resolveMatches();
 
 //     printMarked();//test line
 // cout << "Removed:" << removeMatches() << endl;//test lines
