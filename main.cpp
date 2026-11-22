@@ -423,13 +423,27 @@ bool loadFont()
     
     return false;  }
 
-    return true; // TODO (Rayan)
+    return true; 
 }
 
 // Top 80-pixel strip: score, moves left, target
 void drawHUD(sf::RenderWindow& window)
 {
-    // TODO (Rayan)
+    sf ::Text scoreText(font,"Score :"+to_string(score),22);
+    sf ::Text movesText(font,"Moves :"+to_string(movesLeft),22);
+    sf ::Text targetText(font,"Target :"+to_string(target),22);
+    scoreText.setPosition({20.f,25.f});
+     movesText.setPosition({240.f,25.f});
+    targetText.setPosition({430.f,25.f});
+    scoreText.setFillColor(sf::Color::White);
+    movesText.setFillColor(sf::Color::White);
+    targetText.setFillColor(sf::Color::White);
+    window.draw(scoreText);
+    window.draw(movesText);
+    window.draw(targetText);
+    
+
+    
 }
 
 // If score >= target: player wins. Else if movesLeft == 0: game over.
@@ -522,16 +536,15 @@ int main()
 // printBoard();//test line
 // cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
 // cout << "Matches left:" << findMatches() << endl;
-=======
->>>>>>> Stashed changes
+//=======
+//>>>>>>> Stashed changes
 // refill();
 // printBoard();
- if (!loadFont())
-    {
-        return -1;
-    }
+if(!loadFont())
+{ return -1;
+}
 
 
     while (window.isOpen())
