@@ -418,8 +418,12 @@ void clearSave()
 
 // Loads a .ttf font file from the project folder into font
 bool loadFont()
-{
-    return false;   // TODO (Rayan)
+{ if(!font.openFromFile("arial.ttf"))
+    { cout<<"font loading failed !"<<endl;
+    
+    return false;  }
+
+    return true; // TODO (Rayan)
 }
 
 // Top 80-pixel strip: score, moves left, target
@@ -518,9 +522,17 @@ int main()
 // printBoard();//test line
 // cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
+<<<<<<< Updated upstream
 // cout << "Matches left:" << findMatches() << endl;
+=======
+>>>>>>> Stashed changes
 // refill();
 // printBoard();
+ if (!loadFont())
+    {
+        return -1;
+    }
+
 
     while (window.isOpen())
     {
