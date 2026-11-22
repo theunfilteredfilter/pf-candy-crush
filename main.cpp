@@ -175,7 +175,12 @@ void refill()
 // Repeats remove, drop, refill while findMatches() > 0 (chains)
 void resolveMatches()
 {
-    // TODO (Ubaid)
+    while(findMatches()>0)
+    {
+        removeMatches();
+        dropCandies();
+        refill();
+    }
 }
 
 // BONUS: tries every right and down swap, returns true if one makes a match
@@ -459,7 +464,9 @@ int main()
 //    board[1][0] = 0;
 //    board[3][0] = 0;
 //    board[4][0] = 0;
-//     cout<<"Matches:"<<findMatches()<<endl;//test line
+  // cout<<"Matches:"<<findMatches()<<endl;//test line
+ // resolveMatches();
+
 //     printMarked();//test line
 // cout << "Removed:" << removeMatches() << endl;//test lines
 // printBoard();
@@ -468,6 +475,7 @@ int main()
 // printBoard();//test line
 // cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
+// cout << "Matches left:" << findMatches() << endl;
 // refill();
 // printBoard();
 
