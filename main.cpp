@@ -160,7 +160,16 @@ void dropCandies()
 // Every cell that is still 0 gets rand() % 6 + 1
 void refill()
 {
-    // TODO (Ubaid)
+    for(int r=0;r<ROWS;r++)
+    {
+        for(int c=0;c<COLS;c++)
+        {
+            if(board[r][c]==0)
+            {
+                board[r][c]=rand() % 6+1;
+            }
+        }
+    }
 }
 
 // Repeats remove, drop, refill while findMatches() > 0 (chains)
@@ -426,7 +435,10 @@ int main()
 // cout<<"---"<<endl;
 // dropCandies();
 // printBoard();//test line
+// cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
+// refill();
+// printBoard();
 
     while (window.isOpen())
     {
