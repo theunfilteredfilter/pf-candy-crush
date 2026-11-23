@@ -69,16 +69,16 @@ void printBoard()
 }
 int findMatches()
 {
-    for(int r=0;r<ROWS;r++)
+    for(int r=0;r<ROWS;r++) //making all false so that we can just make the matches true
     {
         for(int c=0;c<COLS;c++)
         {
-            marked[r][c]=false;
+            marked[r][c]=false;// marked array is bool array
         }
     }
     int count=0;
 
-    for(int r=0;r<ROWS;r++)
+    for(int r=0;r<ROWS;r++)  //to check rows 
     {
         for(int c=0;c+2<COLS;c++)
         {
@@ -90,7 +90,7 @@ int findMatches()
            }
         }
     }
-     for(int r=0;r+2<ROWS;r++)
+     for(int r=0;r+2<ROWS;r++)    //to check columns
     {
         for(int c=0;c<COLS;c++)
         {
@@ -104,7 +104,7 @@ int findMatches()
     }
     for(int r=0;r<ROWS;r++)
     {
-        for(int c=0;c<COLS;c++)
+        for(int c=0;c<COLS;c++) // number of matches(count the true cells)
         {
             if(marked[r][c])
             {
@@ -124,16 +124,16 @@ int removeMatches()
     {
         for(int c=0;c<COLS;c++)
         {
-            if(marked[r][c])
+            if(marked[r][c])   // 0 means no candy is there
             {
                 board[r][c]=0;
-                score+=POINTS_PER_CANDY;
+                score+=POINTS_PER_CANDY; //score 10 points each we set this 
                 removed++;
             }
 
         }
     }
-    return removed;
+    return removed; // it return how many u removed 
 }
 
 // One column at a time, bottom-up, using writeRow, so candies fall into gaps
