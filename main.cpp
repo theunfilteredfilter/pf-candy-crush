@@ -37,6 +37,9 @@ int  pressedKey = NONE;
 // ---- Font for all text (Rayan) ----
 sf::Font font;
 
+// declared here because trySwap (above Rayan's section) calls it
+void checkGameEnd();
+
 
 // =====================================================================
 //  UBAID - finding matches, clearing, falling, refilling
@@ -352,7 +355,32 @@ bool cellFromClick(int x, int y, int& row, int& col)
 // Otherwise: movesLeft--, resolveMatches(), checkGameEnd()
 void trySwap(int r1, int c1, int r2, int c2)
 {
-    // TODO (Saim)
+    // 1. swap the two candies; temp keeps the first candy safe
+    //    so it isn't lost when board[r1][c1] is overwritten
+    int temp = board[r1][c1];
+    board[r1][c1] = board[r2][c2];
+    board[r2][c2] = temp;
+
+    // 2. the swap made no match -> swap them back, no move is used
+    if (findMatches() == 0)
+    {
+        temp = board[r1][c1];
+        board[r1][c1] = board[r2][c2];
+        board[r2][c2] = temp;
+    }
+    else
+    {
+        // 3. the swap made a match -> it costs one move, then the matches
+        //    are removed, candies fall and refill (chains included),
+        //    and we check whether the player has won or lost
+        movesLeft--;
+        resolveMatches();
+        checkGameEnd();
+    }
+
+    // 4. either way, nothing is selected after a swap
+    selRow = -1;
+    selCol = -1;
 }
 
 // First click selects, second click on a neighbour calls trySwap,
