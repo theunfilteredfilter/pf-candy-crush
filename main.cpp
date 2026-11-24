@@ -422,9 +422,29 @@ void handleBoardClick()
 }
 
 // Writes score, movesLeft, target and the board to savegame.txt
+// Opening an ofstream wipes the old save, so each save replaces the last one.
+// The order written here must match the order loadSave() reads.
 void saveGame()
 {
-    // TODO (Saim)
+    ofstream fout("savegame.txt");
+    if (!fout)              // the file could not be created
+    {
+        return;
+    }
+
+    // line 1: score, moves left and target, separated by spaces
+    fout << score << " " << movesLeft << " " << target << endl;
+
+    // the 8 board rows, one line per row
+    // (selRow and selCol are not saved, so nothing is selected after Continue)
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            fout << board[r][c] << " ";   // the space keeps the numbers apart
+        }
+        fout << endl;   // new line after each row
+    }
 }
 
 // Reads savegame.txt. Returns false if there is no saved game
