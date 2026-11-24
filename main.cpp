@@ -37,9 +37,6 @@ int  pressedKey = NONE;
 // ---- Font for all text (Rayan) ----
 sf::Font font;
 
-// declared here because trySwap (above Rayan's section) calls it
-void checkGameEnd();
-
 
 // =====================================================================
 //  UBAID - finding matches, clearing, falling, refilling
@@ -72,16 +69,16 @@ void printBoard()
 }
 int findMatches()
 {
-    for(int r=0;r<ROWS;r++) //making all false so that we can just make the matches true
+    for(int r=0;r<ROWS;r++)
     {
         for(int c=0;c<COLS;c++)
         {
-            marked[r][c]=false;// marked array is bool array
+            marked[r][c]=false;
         }
     }
     int count=0;
 
-    for(int r=0;r<ROWS;r++)  //to check rows 
+    for(int r=0;r<ROWS;r++)
     {
         for(int c=0;c+2<COLS;c++)
         {
@@ -93,7 +90,7 @@ int findMatches()
            }
         }
     }
-     for(int r=0;r+2<ROWS;r++)    //to check columns
+     for(int r=0;r+2<ROWS;r++)
     {
         for(int c=0;c<COLS;c++)
         {
@@ -107,7 +104,7 @@ int findMatches()
     }
     for(int r=0;r<ROWS;r++)
     {
-        for(int c=0;c<COLS;c++) // number of matches(count the true cells)
+        for(int c=0;c<COLS;c++)
         {
             if(marked[r][c])
             {
@@ -127,16 +124,16 @@ int removeMatches()
     {
         for(int c=0;c<COLS;c++)
         {
-            if(marked[r][c])   // 0 means no candy is there
+            if(marked[r][c])
             {
                 board[r][c]=0;
-                score+=POINTS_PER_CANDY; //score 10 points each we set this 
+                score+=POINTS_PER_CANDY;
                 removed++;
             }
 
         }
     }
-    return removed; // it return how many u removed 
+    return removed;
 }
 
 // One column at a time, bottom-up, using writeRow, so candies fall into gaps
@@ -355,32 +352,7 @@ bool cellFromClick(int x, int y, int& row, int& col)
 // Otherwise: movesLeft--, resolveMatches(), checkGameEnd()
 void trySwap(int r1, int c1, int r2, int c2)
 {
-    // 1. swap the two candies; temp keeps the first candy safe
-    //    so it isn't lost when board[r1][c1] is overwritten
-    int temp = board[r1][c1];
-    board[r1][c1] = board[r2][c2];
-    board[r2][c2] = temp;
-
-    // 2. the swap made no match -> swap them back, no move is used
-    if (findMatches() == 0)
-    {
-        temp = board[r1][c1];
-        board[r1][c1] = board[r2][c2];
-        board[r2][c2] = temp;
-    }
-    else
-    {
-        // 3. the swap made a match -> it costs one move, then the matches
-        //    are removed, candies fall and refill (chains included),
-        //    and we check whether the player has won or lost
-        movesLeft--;
-        resolveMatches();
-        checkGameEnd();
-    }
-
-    // 4. either way, nothing is selected after a swap
-    selRow = -1;
-    selCol = -1;
+    // TODO (Saim)
 }
 
 // First click selects, second click on a neighbour calls trySwap,
@@ -422,29 +394,9 @@ void handleBoardClick()
 }
 
 // Writes score, movesLeft, target and the board to savegame.txt
-// Opening an ofstream wipes the old save, so each save replaces the last one.
-// The order written here must match the order loadSave() reads.
 void saveGame()
 {
-    ofstream fout("savegame.txt");
-    if (!fout)              // the file could not be created
-    {
-        return;
-    }
-
-    // line 1: score, moves left and target, separated by spaces
-    fout << score << " " << movesLeft << " " << target << endl;
-
-    // the 8 board rows, one line per row
-    // (selRow and selCol are not saved, so nothing is selected after Continue)
-    for (int r = 0; r < ROWS; r++)
-    {
-        for (int c = 0; c < COLS; c++)
-        {
-            fout << board[r][c] << " ";   // the space keeps the numbers apart
-        }
-        fout << endl;   // new line after each row
-    }
+    // TODO (Saim)
 }
 
 // Reads savegame.txt. Returns false if there is no saved game
@@ -512,7 +464,12 @@ void checkGameEnd()
 // score = 0, nothing selected, calls loadLevel(), gameState = PLAYING
 void startNewGame()
 {
-    // TODO (Rayan)
+    score=0;
+    selRow=-1;
+    selCol=-1;
+    loadLevel();
+    gameState=PLAYING;
+    
 }
 
 // New Game / Continue / Exit with the selected option highlighted,
