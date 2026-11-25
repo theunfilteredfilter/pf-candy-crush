@@ -37,6 +37,9 @@ int  pressedKey = NONE;
 // ---- Font for all text (Rayan) ----
 sf::Font font;
 
+// declared here because trySwap (above Rayan's section) calls it
+void checkGameEnd();
+
 
 // =====================================================================
 //  UBAID - finding matches, clearing, falling, refilling
@@ -352,7 +355,32 @@ bool cellFromClick(int x, int y, int& row, int& col)
 // Otherwise: movesLeft--, resolveMatches(), checkGameEnd()
 void trySwap(int r1, int c1, int r2, int c2)
 {
-    // TODO (Saim)
+    // 1. swap the two candies; temp keeps the first candy safe
+    //    so it isn't lost when board[r1][c1] is overwritten
+    int temp = board[r1][c1];
+    board[r1][c1] = board[r2][c2];
+    board[r2][c2] = temp;
+
+    // 2. the swap made no match -> swap them back, no move is used
+    if (findMatches() == 0)
+    {
+        temp = board[r1][c1];
+        board[r1][c1] = board[r2][c2];
+        board[r2][c2] = temp;
+    }
+    else
+    {
+        // 3. the swap made a match -> it costs one move, then the matches
+        //    are removed, candies fall and refill (chains included),
+        //    and we check whether the player has won or lost
+        movesLeft--;
+        resolveMatches();
+        checkGameEnd();
+    }
+
+    // 4. either way, nothing is selected after a swap
+    selRow = -1;
+    selCol = -1;
 }
 
 // First click selects, second click on a neighbour calls trySwap,
@@ -394,21 +422,91 @@ void handleBoardClick()
 }
 
 // Writes score, movesLeft, target and the board to savegame.txt
+// Opening an ofstream wipes the old save, so each save replaces the last one.
+// The order written here must match the order loadSave() reads.
 void saveGame()
 {
-    // TODO (Saim)
+    ofstream fout("savegame.txt");
+    if (!fout)              // the file could not be created
+    {
+        return;
+    }
+
+    // line 1: score, moves left and target, separated by spaces
+    fout << score << " " << movesLeft << " " << target << endl;
+
+    // the 8 board rows, one line per row
+    // (selRow and selCol are not saved, so nothing is selected after Continue)
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            fout << board[r][c] << " ";   // the space keeps the numbers apart
+        }
+        fout << endl;   // new line after each row
+    }
 }
 
-// Reads savegame.txt. Returns false if there is no saved game
+// Reads savegame.txt in the same order saveGame wrote it.
+// Reads into temporary variables first, so a bad or empty file
+// leaves the current game untouched.
+// Returns false if there is no saved game
 bool loadSave()
 {
-    return false;   // TODO (Saim)
+    ifstream fin("savegame.txt");
+    if (!fin)               // no save file at all
+    {
+        return false;
+    }
+
+    // line 1: score, moves left and target, same order as saveGame wrote them
+    int savedScore, savedMoves, savedTarget;
+    fin >> savedScore >> savedMoves >> savedTarget;
+    if (!fin)               // the file is empty (a finished game was cleared)
+    {
+        return false;
+    }
+
+    // the 8 x 8 board, read row by row into a temporary board
+    // (>> skips the spaces and newlines that saveGame wrote)
+    int savedBoard[ROWS][COLS];
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            fin >> savedBoard[r][c];
+        }
+    }
+    if (!fin)               // the file was cut short or damaged
+    {
+        return false;
+    }
+
+    // everything was read fine -> copy it into the real game
+    score = savedScore;
+    movesLeft = savedMoves;
+    target = savedTarget;
+    for (int r = 0; r < ROWS; r++)
+    {
+        for (int c = 0; c < COLS; c++)
+        {
+            board[r][c] = savedBoard[r][c];
+        }
+    }
+
+    // nothing is selected after Continue
+    selRow = -1;
+    selCol = -1;
+    return true;
 }
 
-// Empties savegame.txt (open with ofstream and close straight away)
+// Empties savegame.txt so a finished game cannot be continued.
+// Opening an ofstream wipes the old contents, and we write nothing,
+// so the file is left empty. loadSave() then returns false for it.
 void clearSave()
 {
-    // TODO (Saim)
+    ofstream fout("savegame.txt");
+    fout.close();   // close straight away, leaving the file empty
 }
 
 
