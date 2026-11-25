@@ -33,7 +33,7 @@ bool playerWon = false;        // decides "YOU WIN" or "GAME OVER" text
 bool clicked = false;
 int  clickX = 0, clickY = 0;
 int  pressedKey = NONE;
-
+int menuSelection=0;
 // ---- Font for all text (Rayan) ----
 sf::Font font;
 
@@ -574,13 +574,83 @@ void startNewGame()
 // and the "No saved game" message when needed
 void drawMenu(sf::RenderWindow& window)
 {
-    // TODO (Rayan)
+    sf::Text title(font,"Candy Crush",45);
+    title.setPosition({ 155.f,100.f});
+    title.setFillColor(sf::Color::Yellow);
+
+    sf::Text newGame(font,"NewGame",30);
+    newGame.setPosition({ 220.f,250.f});
+
+    sf::Text continueGame(font,"Continue",30);
+    continueGame.setPosition({ 220.f,320.f});
+
+    sf::Text exitGame(font,"exit",30);
+    exitGame.setPosition({ 220.f,390.f});
+    if(pressedKey==UP)
+    { 
+        menuSelection--;
+        if(menuSelection<0)
+        {menuSelection=2;}
+    }
+
+    if(pressedKey == DOWN)
+    { 
+        menuSelection++;
+        if(menuSelection>2)
+        {menuSelection=0;}
+    }
+    if(menuSelection == 0)
+    { 
+        newGame.setFillColor(sf::Color::Yellow);}
+        
+        else
+        { 
+            newGame.setFillColor(sf::Color::White);}
+
+
+ if(menuSelection == 1)
+    { 
+        continueGame.setFillColor(sf::Color::Yellow);}
+        
+        else
+        { 
+            continueGame.setFillColor(sf::Color::White);
+            
+        }
+         if(menuSelection==2)
+    { 
+        exitGame.setFillColor(sf::Color::Yellow);}
+        
+        else
+        { 
+            exitGame.setFillColor(sf::Color::White);
+        }
+            
+    window.draw(title);
+             
+    window.draw(newGame);
+
+             
+    window.draw(continueGame);
+
+             
+    window.draw(exitGame);
+     if (!loadSave())
+    {
+        sf::Text message(font, "No saved game", 20);
+        message.setPosition({220.f, 460.f});
+        message.setFillColor(sf::Color::Red);
+        window.draw(message);
+    }
+
+
+
 }
 
 // "YOU WIN" or "GAME OVER", the final score, and "Press Enter"
 void drawGameOver(sf::RenderWindow& window)
 {
-    // TODO (Rayan)
+//todo (rayan)
 }
 
 
@@ -643,7 +713,7 @@ int main()
 // cout << "Removed:" << removeMatches() << endl;//test lines
 // printBoard();
 // cout<<"---"<<endl;
-// dropCandies();
+//dropCandies();
 // printBoard();//test line
 // cout<<"---"<<endl;
 // cout << "Score:" << score << endl;// test line 
