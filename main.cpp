@@ -647,6 +647,19 @@ void drawMenu(sf::RenderWindow& window)
 
 }
 
+// Set to true if loadLevel() fails, so drawGame() shows the error instead of the board
+bool levelMissing = false;
+
+// Draws an error message on screen if level.txt is missing or invalid
+void drawLevelError(sf::RenderWindow& window)
+{
+    // SFML 3 requires the font, string, and character size when creating sf::Text
+    sf::Text errText(font, "Error: level.txt not found!\nPlace it next to app.exe and restart.", 24);
+    errText.setPosition({60.f, 270.f});
+    errText.setFillColor(sf::Color::Red);
+    window.draw(errText);
+}
+
 // "YOU WIN" or "GAME OVER", the final score, and "Press Enter"
 void drawGameOver(sf::RenderWindow& window)
 {
