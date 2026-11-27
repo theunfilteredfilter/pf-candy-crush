@@ -715,7 +715,19 @@ void handleInput(sf::RenderWindow& window)
                 clicked = true;
             }
         }
-        // TODO (Rayan): read Escape, Enter, Up, Down into pressedKey
+            else if(const auto*key=event->getIf<sf::Event::KeyPressed>())
+            { 
+                if(key->code==sf::Keyboard::Key::Escape)
+                pressedKey=ESCAPE;
+                else if(key->code==sf::Keyboard::Key::Enter)
+                pressedKey=ENTER;
+                else if(key->code==sf::Keyboard::Key::Up)
+                pressedKey=UP;
+                else if(key->code==sf::Keyboard::Key::Down)
+                pressedKey=DOWN;
+            }
+        
+        
     }
 }
 
