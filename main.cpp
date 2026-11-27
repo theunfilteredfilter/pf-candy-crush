@@ -663,9 +663,35 @@ void drawLevelError(sf::RenderWindow& window)
 // "YOU WIN" or "GAME OVER", the final score, and "Press Enter"
 void drawGameOver(sf::RenderWindow& window)
 {
-//todo (rayan)
+sf::Text result(font,"",40);
+result.setPosition({170.f,150.f});
+result.setFillColor(sf::Color::Yellow);
+
+if(playerWon==true)
+{ 
+    result.setString("You Won");
+    result.setFillColor(sf::Color::Blue);
 }
 
+    else
+    { 
+    result.setString("You lost");
+    result.setFillColor(sf::Color::Blue);
+}
+sf::Text finalScore(font,"Final Score :"+to_string(score),25);
+finalScore.setPosition({170.f,330.f});
+finalScore.setFillColor(sf::Color::Blue);
+
+sf::Text instruction(font,"Press Enter",25);
+instruction.setPosition({170.f,350.f});
+instruction.setFillColor(sf::Color::Blue);
+window.draw(result);
+window.draw(finalScore);
+window.draw(instruction);
+
+
+
+}
 
 // =====================================================================
 //  GAME LOOP (Rayan adds switch (gameState) in these three)
