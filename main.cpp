@@ -34,6 +34,11 @@ bool clicked = false;
 int  clickX = 0, clickY = 0;
 int  pressedKey = NONE;
 int menuSelection=0;
+
+// ---- Menu / error flags ----
+bool levelMissing = false;     // true if loadLevel() failed, drawGame() shows the error instead of the board
+bool noSavedGame = false;      // true if Continue was chosen but there is no save, the menu shows a message
+
 // ---- Font for all text (Rayan) ----
 sf::Font font;
 
@@ -548,77 +553,76 @@ void drawHUD(sf::RenderWindow& window)
 // Sets gameState and playerWon, and calls clearSave()
 void checkGameEnd()
 {
-    if(score>=target)
-    { 
-        gameState=GAME_OVER;
-        playerWon=true;
+    if (score >= target)
+    {
+        gameState = GAME_OVER;
+        playerWon = true;
+        clearSave();        // a finished game cannot be continued
     }
-    else if (movesLeft<=0)
-    { gameState=GAME_OVER;
-    playerWon=false;}
-    
+    else if (movesLeft <= 0)
+    {
+        gameState = GAME_OVER;
+        playerWon = false;
+        clearSave();        // a finished game cannot be continued
+    }
 }
 
 // score = 0, nothing selected, calls loadLevel(), gameState = PLAYING
 void startNewGame()
 {
-    score=0;
-    selRow=-1;
-    selCol=-1;
-    loadLevel();
-    gameState=PLAYING;
-    
+    score = 0;
+    selRow = -1;
+    selCol = -1;
+    levelMissing = !loadLevel();   // true if level.txt is missing, drawGame() then shows the error
+    noSavedGame = false;
+    gameState = PLAYING;
 }
 
 // New Game / Continue / Exit with the selected option highlighted,
 // and the "No saved game" message when needed
 void drawMenu(sf::RenderWindow& window)
 {
-    sf::Text title(font,"Candy Crush",45);
-    title.setPosition({ 155.f,100.f});
+    sf::Text title(font, "Candy Crush", 45);
+    title.setPosition({155.f, 100.f});
     title.setFillColor(sf::Color::Yellow);
 
-    sf::Text newGame(font,"NewGame",30);
-    newGame.setPosition({ 220.f,250.f});
+    sf::Text newGame(font, "New Game", 30);
+    newGame.setPosition({220.f, 250.f});
 
-    sf::Text continueGame(font,"Continue",30);
-    continueGame.setPosition({ 220.f,320.f});
+    sf::Text continueGame(font, "Continue", 30);
+    continueGame.setPosition({220.f, 320.f});
 
-    sf::Text exitGame(font,"exit",30);
-    exitGame.setPosition({ 220.f,390.f});
-    
-    if(menuSelection == 0)
-    
+    sf::Text exitGame(font, "Exit", 30);
+    exitGame.setPosition({220.f, 390.f});
+
+    // the selected option is yellow, the others stay white
+    if (menuSelection == 0)
+    {
         newGame.setFillColor(sf::Color::Yellow);
-        
-    
-
-else if(menuSelection == 1)
-    
-        continueGame.setFillColor(sf::Color::Yellow);    
-       
-        else  if(menuSelection==2)
-    
+    }
+    else if (menuSelection == 1)
+    {
+        continueGame.setFillColor(sf::Color::Yellow);
+    }
+    else if (menuSelection == 2)
+    {
         exitGame.setFillColor(sf::Color::Yellow);
-       
-    
+    }
+
     window.draw(title);
-             
     window.draw(newGame);
-
-             
     window.draw(continueGame);
-
-             
     window.draw(exitGame);
-     
 
+    // shown after Continue was chosen but there was nothing to load
+    if (noSavedGame)
+    {
+        sf::Text message(font, "No saved game", 20);
+        message.setPosition({220.f, 460.f});
+        message.setFillColor(sf::Color::Red);
+        window.draw(message);
+    }
 }
-
-
-
-// Set to true if loadLevel() fails, so drawGame() shows the error instead of the board
-bool levelMissing = false;
 
 // Draws an error message on screen if level.txt is missing or invalid
 void drawLevelError(sf::RenderWindow& window)
@@ -633,34 +637,31 @@ void drawLevelError(sf::RenderWindow& window)
 // "YOU WIN" or "GAME OVER", the final score, and "Press Enter"
 void drawGameOver(sf::RenderWindow& window)
 {
-sf::Text result(font,"",40);
-result.setPosition({170.f,150.f});
-result.setFillColor(sf::Color::Yellow);
+    sf::Text result(font, "", 50);
+    result.setPosition({170.f, 150.f});
 
-if(playerWon==true)
-{ 
-    result.setString("You Won");
-    result.setFillColor(sf::Color::Blue);
-}
-
+    if (playerWon)
+    {
+        result.setString("YOU WIN");
+        result.setFillColor(sf::Color::Green);
+    }
     else
-    { 
-    result.setString("You lost");
-    result.setFillColor(sf::Color::Blue);
-}
-sf::Text finalScore(font,"Final Score :"+to_string(score),25);
-finalScore.setPosition({170.f,330.f});
-finalScore.setFillColor(sf::Color::Blue);
+    {
+        result.setString("GAME OVER");
+        result.setFillColor(sf::Color::Red);
+    }
 
-sf::Text instruction(font,"Press Enter",25);
-instruction.setPosition({170.f,350.f});
-instruction.setFillColor(sf::Color::Blue);
-window.draw(result);
-window.draw(finalScore);
-window.draw(instruction);
+    sf::Text finalScore(font, "Final Score: " + to_string(score), 28);
+    finalScore.setPosition({170.f, 300.f});
+    finalScore.setFillColor(sf::Color::White);
 
+    sf::Text instruction(font, "Press Enter", 25);
+    instruction.setPosition({170.f, 370.f});
+    instruction.setFillColor(sf::Color::Yellow);
 
-
+    window.draw(result);
+    window.draw(finalScore);
+    window.draw(instruction);
 }
 
 // =====================================================================
@@ -685,24 +686,21 @@ void handleInput(sf::RenderWindow& window)
                 clicked = true;
             }
         }
-            else if(const auto*key=event->getIf<sf::Event::KeyPressed>())
-            { 
-                if(key->code==sf::Keyboard::Key::Escape)
-                pressedKey=ESCAPE;
-                else if(key->code==sf::Keyboard::Key::Enter)
-                pressedKey=ENTER;
-                else if(key->code==sf::Keyboard::Key::Up)
-                pressedKey=UP;
-                else if(key->code==sf::Keyboard::Key::Down)
-                pressedKey=DOWN;
-            }
-        
-        
+        else if (const auto* key = event->getIf<sf::Event::KeyPressed>())
+        {
+            if (key->code == sf::Keyboard::Key::Escape)
+                pressedKey = ESCAPE;
+            else if (key->code == sf::Keyboard::Key::Enter)
+                pressedKey = ENTER;
+            else if (key->code == sf::Keyboard::Key::Up)
+                pressedKey = UP;
+            else if (key->code == sf::Keyboard::Key::Down)
+                pressedKey = DOWN;
+        }
     }
 }
 
 // Step 2 of the loop: change the game
-
 void updateGame(sf::RenderWindow& window)
 {
     switch (gameState)
@@ -712,7 +710,6 @@ void updateGame(sf::RenderWindow& window)
             if (pressedKey == UP)
             {
                 menuSelection--;
-
                 if (menuSelection < 0)
                 {
                     menuSelection = 2;
@@ -721,7 +718,6 @@ void updateGame(sf::RenderWindow& window)
             else if (pressedKey == DOWN)
             {
                 menuSelection++;
-
                 if (menuSelection > 2)
                 {
                     menuSelection = 0;
@@ -737,12 +733,19 @@ void updateGame(sf::RenderWindow& window)
                 {
                     if (loadSave())
                     {
+                        levelMissing = false;
+                        noSavedGame = false;
                         gameState = PLAYING;
+                    }
+                    else
+                    {
+                        noSavedGame = true;   // stay on the menu and show "No saved game"
                     }
                 }
                 else if (menuSelection == 2)
                 {
-                   window.close();
+                    window.close();
+                }
             }
             break;
         }
@@ -751,7 +754,10 @@ void updateGame(sf::RenderWindow& window)
         {
             if (pressedKey == ESCAPE)
             {
-                saveGame();
+                if (!levelMissing)    // do not overwrite a good save with an empty board
+                {
+                    saveGame();
+                }
                 gameState = MENU;
                 selRow = -1;
                 selCol = -1;
@@ -775,18 +781,36 @@ void updateGame(sf::RenderWindow& window)
         }
     }
 }
-}
-
-
-
-
 
 // Step 3 of the loop: draw everything
 void drawGame(sf::RenderWindow& window)
 {
     window.clear(sf::Color(40, 20, 60));   // background colour
-    drawBoard(window);
-    drawHUD(window);
+
+    // each state draws only its own screen
+    switch (gameState)
+    {
+        case MENU:
+            drawMenu(window);
+            break;
+
+        case PLAYING:
+            if (levelMissing)
+            {
+                drawLevelError(window);
+            }
+            else
+            {
+                drawBoard(window);
+                drawHUD(window);
+            }
+            break;
+
+        case GAME_OVER:
+            drawGameOver(window);
+            break;
+    }
+
     window.display();
 }
 
