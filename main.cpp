@@ -586,46 +586,22 @@ void drawMenu(sf::RenderWindow& window)
 
     sf::Text exitGame(font,"exit",30);
     exitGame.setPosition({ 220.f,390.f});
-    if(pressedKey==UP)
-    { 
-        menuSelection--;
-        if(menuSelection<0)
-        {menuSelection=2;}
-    }
-
-    if(pressedKey == DOWN)
-    { 
-        menuSelection++;
-        if(menuSelection>2)
-        {menuSelection=0;}
-    }
+    
     if(menuSelection == 0)
-    { 
-        newGame.setFillColor(sf::Color::Yellow);}
+    
+        newGame.setFillColor(sf::Color::Yellow);
         
-        else
-        { 
-            newGame.setFillColor(sf::Color::White);}
+    
 
-
- if(menuSelection == 1)
-    { 
-        continueGame.setFillColor(sf::Color::Yellow);}
-        
-        else
-        { 
-            continueGame.setFillColor(sf::Color::White);
-            
-        }
-         if(menuSelection==2)
-    { 
-        exitGame.setFillColor(sf::Color::Yellow);}
-        
-        else
-        { 
-            exitGame.setFillColor(sf::Color::White);
-        }
-            
+else if(menuSelection == 1)
+    
+        continueGame.setFillColor(sf::Color::Yellow);    
+       
+        else  if(menuSelection==2)
+    
+        exitGame.setFillColor(sf::Color::Yellow);
+       
+    
     window.draw(title);
              
     window.draw(newGame);
@@ -635,17 +611,11 @@ void drawMenu(sf::RenderWindow& window)
 
              
     window.draw(exitGame);
-     if (!loadSave())
-    {
-        sf::Text message(font, "No saved game", 20);
-        message.setPosition({220.f, 460.f});
-        message.setFillColor(sf::Color::Red);
-        window.draw(message);
-    }
-
-
+     
 
 }
+
+
 
 // Set to true if loadLevel() fails, so drawGame() shows the error instead of the board
 bool levelMissing = false;
