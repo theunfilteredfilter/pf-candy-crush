@@ -732,10 +732,84 @@ void handleInput(sf::RenderWindow& window)
 }
 
 // Step 2 of the loop: change the game
-void updateGame()
+
+void updateGame(sf::RenderWindow& window)
 {
-    // TODO (Rayan): switch (gameState) { case MENU: ... case PLAYING: ... case GAME_OVER: ... }
+    switch (gameState)
+    {
+        case MENU:
+        {
+            if (pressedKey == UP)
+            {
+                menuSelection--;
+
+                if (menuSelection < 0)
+                {
+                    menuSelection = 2;
+                }
+            }
+            else if (pressedKey == DOWN)
+            {
+                menuSelection++;
+
+                if (menuSelection > 2)
+                {
+                    menuSelection = 0;
+                }
+            }
+            else if (pressedKey == ENTER)
+            {
+                if (menuSelection == 0)
+                {
+                    startNewGame();
+                }
+                else if (menuSelection == 1)
+                {
+                    if (loadSave())
+                    {
+                        gameState = PLAYING;
+                    }
+                }
+                else if (menuSelection == 2)
+                {
+                   window.close();
+            }
+            break;
+        }
+
+        case PLAYING:
+        {
+            if (pressedKey == ESCAPE)
+            {
+                saveGame();
+                gameState = MENU;
+                selRow = -1;
+                selCol = -1;
+            }
+            else if (clicked)
+            {
+                handleBoardClick();
+            }
+            break;
+        }
+
+        case GAME_OVER:
+        {
+            if (pressedKey == ENTER)
+            {
+                clearSave();
+                gameState = MENU;
+                menuSelection = 0;
+            }
+            break;
+        }
+    }
 }
+}
+
+
+
+
 
 // Step 3 of the loop: draw everything
 void drawGame(sf::RenderWindow& window)
@@ -782,7 +856,7 @@ if(!loadFont())
     while (window.isOpen())
     {
         handleInput(window);
-        updateGame();
+        updateGame(window);
         drawGame(window);
     }
     return 0;
